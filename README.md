@@ -35,9 +35,9 @@ The case of the operation key "remotehost"
       ConnParm:
       - hostname: XXX.XXX.XXX.XXX
       - userid: Administrator
-      - passwd: \_${XXXXXPASSWD}
+      - passwd: _${XXXXXPASSWD}
       Operation:
-      - remoteope: cmd /c net user Administrator \_${YYYYYPASSWD}
+      - remoteope: cmd /c net user Administrator _${YYYYYPASSWD}
       - remoteope: Powershell -c '$i6 = Get-NetAdapterBinding | Where-Object {$_.ComponentID -eq ''ms_tcpip6''};
                                   foreach($List in $i6){
                                     Disable-NetAdapterBinding -Name $List.Name -ComponentID ms_tcpip6}'
@@ -56,9 +56,9 @@ TargetCon1:
   ConnParm:
   - hostname: XXX.XXX.XXX.XXX 
   - userid: Administrator
-  - passwd: \_${XXXXXPASSWD}
+  - passwd: _${XXXXXPASSWD}
   Operation:
-  - psdscope: \_${DSCDIRECTORY}\Add_IIS
+  - psdscope: _${DSCDIRECTORY}\Add_IIS
 ```      
 
 ---
@@ -79,7 +79,7 @@ TargetCon1:
                for(;;){ 
                   $result=Test-Connection _${SIM2016AWSIP} -Count 1 -quiet;
                   if($result -eq ''True''){ 
-                     Write-Host \_${SIM2016AWSIP} ping ok; break;
+                     Write-Host _${SIM2016AWSIP} ping ok; break;
                   } 
                   Write-host \_${SIM2016AWSIP} It's not working.;Start-Sleep -Seconds 5
                }"'
