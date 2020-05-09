@@ -1,0 +1,9 @@
+###########WindowsFeatureからIISをインストール################
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### PowershellDSCでインストール
+  - psdscope: _${DSCDIRECTORY}\Add_IIS

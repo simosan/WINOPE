@@ -1,0 +1,22 @@
+###########WindowsMSiファイルを対象サーバに転送################
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### Installerを転送
+  #- localope: powershell -c "Copy-Item -Recurse 'C:\Users\Administrator\OneDrive\ドキュメント\python_code\winope\material\winlogbeat-7.6.2-windows-x86_64.msi'
+  #                                              'FileSystem::\\_${SIM2016AWSIP}\D$\appl\ii\tmp\'
+  #                                     -Force"
+  - remoteope: powershell -c 'Invoke-WebRequest -Uri http://192.168.11.10/material/winlogbeat-7.6.2-windows-x86_64.msi
+                              -outfile d:\appl\ii\tmp\winlogbeat-7.6.2-windows-x86_64.msi'
+###########Winlogbeatをインストール################            
+TargetCon2:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  - remoteope: cmd.exe /c "start /wait msiexec.exe /i D:\appl\ii\tmp\winlogbeat-7.6.2-windows-x86_64.msi /quiet"
+  - remoteope: powershell -c 'Remove-Item -Path D:\appl\ii\tmp\winlogbeat-7.6.2-windows-x86_64.msi' -Force

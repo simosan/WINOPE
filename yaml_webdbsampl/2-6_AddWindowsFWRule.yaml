@@ -1,0 +1,31 @@
+###########Windowsサーバに追加ボリュームを指定ドライブレターにアタッチする################
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### WidowsFWのルールを追加する
+  - psdscope: _${DSCDIRECTORY}\Add_WindowsFW
+  ### WindowsFWを有効化する
+  #### DomainProfile####
+  - remoteope: cmd /c netsh advfirewall set domainprofile state on
+  - remoteope: powershell -c 'netsh advfirewall set domainprofile firewallpolicy blockinbound,allowoutbound'
+  - remoteope: cmd /c netsh advfirewall set domainprofile logging droppedconnections enable
+  - remoteope: cmd /c netsh advfirewall set domainprofile logging filename d:\appl\ii\log\pfdomainfirewall.log
+  - remoteope: cmd /c netsh advfirewall set domainprofile logging maxfilesize 32767
+  #### PrivateProfile####
+  - remoteope: cmd /c netsh advfirewall set privateprofile state on
+  - remoteope: powershell -c 'netsh advfirewall set privateprofile firewallpolicy blockinbound,allowoutbound'
+  - remoteope: cmd /c netsh advfirewall set privateprofile logging droppedconnections enable
+  - remoteope: cmd /c netsh advfirewall set privateprofile logging filename d:\appl\ii\log\pfprivatefirewall.log
+  - remoteope: cmd /c netsh advfirewall set privateprofile logging maxfilesize 32767  
+  #### PublicProfile####
+  - remoteope: cmd /c netsh advfirewall set publicprofile state on
+  - remoteope: powershell -c 'netsh advfirewall set publicprofile firewallpolicy blockinboundalways,allowoutbound'
+###########ローカルユーザでログイン許可（これやっとかないとリモートサーバ（対象サーバ）にローカルユーザでログインできない）################ 
+TargetCon2:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  - localope:  Powershell -c 'Set-Item WSman:\localhost\Client\TrustedHosts -Value * -Force'

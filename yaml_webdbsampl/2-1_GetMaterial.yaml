@@ -1,0 +1,63 @@
+###########Windowsサーバに資材を配置する################3
+#TargetCon1:
+#  ConnParm:
+#  - hostname: localhost
+#  Operation:
+  ### PowershellDSC用資材を転送
+  #### Carbon
+  #- localope: powershell -c "Copy-Item -Recurse 'C:\Program Files\WindowsPowerShell\Modules\Carbon\'
+  #                                              'FileSystem::\\_${SIM2016AWSIP}\C$\Program Files\WindowsPowerShell\Modules\'
+  #                                     -Force"  
+  #### ComputerManagementDsc
+  #- localope: powershell -c "Copy-Item -Recurse 'C:\Program Files\WindowsPowerShell\Modules\ComputerManagementDsc\'
+  #                                              'FileSystem::\\_${SIM2016AWSIP}\C$\Program Files\WindowsPowerShell\Modules\'
+  #                                     -Force"   
+  #### NetworkingDsc  
+  #- localope: powershell -c "Copy-Item -Recurse 'C:\Program Files\WindowsPowerShell\Modules\NetworkingDsc\'
+  #                                              'FileSystem::\\_${SIM2016AWSIP}\C$\Program Files\WindowsPowerShell\Modules\'
+  #                                     -Force"   
+  #### PSDscResource     
+  #- localope: powershell -c "Copy-Item -Recurse 'C:\Program Files\WindowsPowerShell\Modules\PSDscResources\'
+  #                                              'FileSystem::\\_${SIM2016AWSIP}\C$\Program Files\WindowsPowerShell\Modules\'
+  #                                     -Force"
+  #### StorageDsc
+  #- localope: powershell -c "Copy-Item -Recurse 'C:\Program Files\WindowsPowerShell\Modules\StorageDsc\'
+  #                                              'FileSystem::\\_${SIM2016AWSIP}\C$\Program Files\WindowsPowerShell\Modules\'
+  #                                     -Force"
+###########Windowsサーバに資材を配置する(HTTPサーバからダウンロード）################3
+TargetCon1:
+  ConnParm:
+  - hostname: 192.168.112.11
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  #### Carbon
+  - remoteope: powershell -c 'Invoke-WebRequest -Uri http://192.168.11.10/material/Carbon.zip
+                              -outfile ''C:\Program Files\WindowsPowerShell\Modules\Carbon.zip'''
+  - remoteope: powershell -c 'Expand-Archive -Path ''C:\Program Files\WindowsPowerShell\Modules\Carbon.zip'' -DestinationPath 
+                                                   ''C:\Program Files\WindowsPowerShell\Modules\'' -Force'
+  - remoteope: powershell -c 'Remove-Item -Path ''C:\Program Files\WindowsPowerShell\Modules\Carbon.zip'' -Force'
+  #### ComputerManagementDsc
+  - remoteope: powershell -c 'Invoke-WebRequest -Uri http://192.168.11.10/material/ComputerManagementDsc.zip
+                              -outfile ''C:\Program Files\WindowsPowerShell\Modules\ComputerManagementDsc.zip'''
+  - remoteope: powershell -c 'Expand-Archive -Path ''C:\Program Files\WindowsPowerShell\Modules\ComputerManagementDsc.zip'' -DestinationPath 
+                                                   ''C:\Program Files\WindowsPowerShell\Modules\'' -Force'
+  - remoteope: powershell -c 'Remove-Item -Path ''C:\Program Files\WindowsPowerShell\Modules\ComputerManagementDsc.zip'' -Force'
+  #### NetworkingDsc
+  - remoteope: powershell -c 'Invoke-WebRequest -Uri http://192.168.11.10/material/NetworkingDsc.zip
+                              -outfile ''C:\Program Files\WindowsPowerShell\Modules\NetworkingDsc.zip'''
+  - remoteope: powershell -c 'Expand-Archive -Path ''C:\Program Files\WindowsPowerShell\Modules\NetworkingDsc.zip'' -DestinationPath 
+                                                   ''C:\Program Files\WindowsPowerShell\Modules\'' -Force'
+  - remoteope: powershell -c 'Remove-Item -Path ''C:\Program Files\WindowsPowerShell\Modules\NetworkingDsc.zip'' -Force' 
+  #### PSDscResource                            
+  - remoteope: powershell -c 'Invoke-WebRequest -Uri http://192.168.11.10/material/PSDscResources.zip
+                              -outfile ''C:\Program Files\WindowsPowerShell\Modules\PSDscResources.zip'''
+  - remoteope: powershell -c 'Expand-Archive -Path ''C:\Program Files\WindowsPowerShell\Modules\PSDscResources.zip'' -DestinationPath 
+                                                   ''C:\Program Files\WindowsPowerShell\Modules\'' -Force'
+  - remoteope: powershell -c 'Remove-Item -Path ''C:\Program Files\WindowsPowerShell\Modules\PSDscResources.zip'' -Force' 
+  #### StorageDsc
+  - remoteope: powershell -c 'Invoke-WebRequest -Uri http://192.168.11.10/material/StorageDsc.zip
+                              -outfile ''C:\Program Files\WindowsPowerShell\Modules\StorageDsc.zip'''
+  - remoteope: powershell -c 'Expand-Archive -Path ''C:\Program Files\WindowsPowerShell\Modules\StorageDsc.zip'' -DestinationPath 
+                                                   ''C:\Program Files\WindowsPowerShell\Modules\'' -Force'
+  - remoteope: powershell -c 'Remove-Item -Path ''C:\Program Files\WindowsPowerShell\Modules\StorageDsc.zip'' -Force'

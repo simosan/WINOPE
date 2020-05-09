@@ -1,0 +1,30 @@
+###########メモリ関係の設定################
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### 仮想メモリ設定（PowershellDSCで）
+  - psdscope: _${DSCDIRECTORY}\Mod_VMemorySize
+  ### メモリダンプの設定変更
+  - remoteope: powershell -c '
+                $CrashBehaviour = Get-WmiObject Win32_OSRecoveryConfiguration -EnableAllPrivileges;
+                $CrashBehaviour | Set-WmiInstance -Arguments @{ AutoReboot=$False };
+                $CrashBehaviour = Get-WmiObject Win32_OSRecoveryConfiguration -EnableAllPrivileges;
+                $CrashBehaviour | Set-WmiInstance -Arguments @{ DebugInfoType=1 };
+                $CrashBehaviour = Get-WmiObject Win32_OSRecoveryConfiguration -EnableAllPrivileges;
+                $CrashBehaviour | Set-WmiInstance -Arguments @{ DebugFilePath=''J:\appl\ii\work\MEMORY.DMP'' }'
+  ### サーバ再起動
+  - remoteope: shutdown -r -t 0
+  ### pingを打ち続ける。起動したら止まる
+  - localope: 'powershell -c "
+               for(;;){ 
+                  Start-Sleep -Seconds 10;
+                  $result=Test-Connection _${SIM2016AWSIP} -Count 1 -quiet;
+                  if($result -eq ''True''){ 
+                     Write-Host _${SIM2016AWSIP} ping ok;
+                     break;
+                  } 
+                  Write-host _${SIM2016AWSIP} 起動していません;
+               }"'

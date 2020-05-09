@@ -1,0 +1,20 @@
+########### AWS管理コンソールにAWSカギ(SSHかぎ）を投入してAdministratorの初期パスワードを取得
+TargetCon1:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  ## インスタンスIDを指定してAWSコンソールからパスワード復号データを取得する。(生成されたファイルはあとで消す！！)
+  ## なぜか時間をおかないと取得できない（1-2分？）ので生成されるまでループでまつ。
+  - localope: 'powershell -c "
+                  for(;;){
+                    $($i=Get-Content _${WORKDIR}/instance-id-_${SIM2016AWSHOSTNAME}.txt;
+                    aws ec2 get-password-data --profile _${AWSPROFILE} --instance-id $i --priv-launch-key _${AWSPUBLICKEY} |
+                      ConvertFrom-JSON).PasswordData > _${WORKDIR}/_${SIM2016AWSHOSTNAME}_tmpps.txt;
+                    $bytes=(Get-ChildItem _${WORKDIR}/_${SIM2016AWSHOSTNAME}_tmpps.txt).Length;
+                    Write-Host $bytes;
+                    if($bytes -gt 6){ 
+                      Write-Host _${SIM2016AWSHOSTNAME}_tmpps.txt 出力OK!;
+                      break;
+                    }
+                    Start-Sleep -Seconds 30;
+                  }"'

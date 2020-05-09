@@ -1,0 +1,35 @@
+###########Windowsサーバにボリュームを追加する################3
+#### aws cliをつかって，EBSボリュームを作成，インスタンスにアタッチ
+TargetCon1:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  ### Dドライブ用ボリューム作成（タグでチェックしすでにあれば作成しない） 
+  - localope: powershell -c "$flg=aws ec2 describe-volumes --profile _${AWSPROFILE} --filters Name=tag:Name,Values=_${EBSVOLTAGD} | 
+                            jq -r '.Volumes[].VolumeId'; 
+                            if($flg -eq $null){
+                            aws ec2 create-volume --profile _${AWSPROFILE} --region ap-northeast-1 --availability-zone ap-northeast-1a 
+                            --volume-type gp2 --size 30 --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=_${EBSVOLTAGD}}]'}"
+  ### 生成したDドライブ用のボリュームIDを一時ファイルに出力
+  - localope: powershell -c "$(aws ec2 describe-volumes --profile _${AWSPROFILE} 
+                            --filters "Name=tag:Name,Values=_${EBSVOLTAGD}" | 
+                            ConvertFrom-Json).Volumes.VolumeId > _${WORKDIR}/_${EBSVOLTAGD}.txt"
+  ### Dドライブ用ボリュームをインスタンスにアタッチ（ターゲットIDは1なのでxvdb）
+  - localope: powershell -c "$i=Get-Content _${WORKDIR}/instance-id-_${SIM2016AWSHOSTNAME}.txt;
+                            $v=Get-Content _${WORKDIR}/_${EBSVOLTAGD}.txt;
+                            aws ec2 attach-volume --profile _${AWSPROFILE} --device xvdb --instance-id $i --volume-id $v"  
+  ### Jドライブ用ボリューム作成（タグでチェックしすでにあれば作成しない） 
+  - localope: powershell -c "$flg=aws ec2 describe-volumes --profile _${AWSPROFILE} --filters Name=tag:Name,Values=_${EBSVOLTAGJ} | 
+                            jq -r '.Volumes[].VolumeId'; 
+                            if($flg -eq $null){
+                            aws ec2 create-volume --profile _${AWSPROFILE} --region ap-northeast-1 --availability-zone ap-northeast-1a 
+                            --volume-type gp2 --size 20 --tag-specifications 'ResourceType=volume,Tags=[{Key=Name,Value=_${EBSVOLTAGJ}}]'}"
+  ### 生成したJドライブ用のボリュームIDを一時ファイルに出力
+  - localope: powershell -c "$(aws ec2 describe-volumes --profile _${AWSPROFILE}
+                            --filters "Name=tag:Name,Values=_${EBSVOLTAGJ}" | 
+                            ConvertFrom-Json).Volumes.VolumeId > _${WORKDIR}/_${EBSVOLTAGJ}.txt"
+   ### Jドライブ用ボリュームをインスタンスにアタッチ（ターゲットIDは2なのでxvdc）
+  - localope: powershell -c "$i=Get-Content _${WORKDIR}/instance-id-_${SIM2016AWSHOSTNAME}.txt;
+                            $v=Get-Content _${WORKDIR}/_${EBSVOLTAGJ}.txt;
+                            aws ec2 attach-volume --profile _${AWSPROFILE} --device xvdc --instance-id $i --volume-id $v"  
+   

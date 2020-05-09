@@ -1,0 +1,22 @@
+###########ドメインに参加する################3
+TargetCon1:
+  ConnParm:
+  - hostname: 192.168.112.11
+  - userid: Administrator
+  - passwd: _${EC2CHGPASSWD}
+  Operation:
+  ## ドメイン参加（DomainAdministratorのIDとパスワード指定）
+  - remoteope: Powershell -c '$pwd = ConvertTo-SecureString _${ADMINPASSWD} -AsPlainText -Force;
+                              $cred = New-Object System.Management.Automation.PSCredential ''_${DOMAINID}'',$pwd;
+                              Add-Computer -DomainName _${DOMAINNAME} -Credential $cred -OUPath ''_${NEWCOMPUTEROU}'' -restart'
+  ### pingを打ち続ける。起動したら止まる
+  - localope: 'powershell -c "
+               for(;;){ 
+                  Start-Sleep -Seconds 10;
+                  $result=Test-Connection _${SIM2016AWSIP} -Count 1 -quiet;
+                  if($result -eq ''True''){ 
+                     Write-Host _${SIM2016AWSIP} ping ok;
+                     break;
+                  } 
+                  Write-host _${SIM2016AWSIP} 起動していません;
+               }"'

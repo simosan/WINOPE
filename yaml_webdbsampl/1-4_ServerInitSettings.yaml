@@ -1,0 +1,32 @@
+###########Windowsサーバの初期セットアップ（ホスト名変更等）################3
+#### 注意　Powershellでパイプ（|）を使う場合は，コマンド部をシングルクォートで囲う事!
+TargetCon1:
+  ConnParm:
+  - hostname: 192.168.112.11
+  - userid: Administrator
+  - passwd: _${EC2CHGPASSWD}
+  Operation:
+  ###  ホスト名変更
+  - remoteope: Powershell -c "Rename-Computer -NewName _${SIM2016AWSHOSTNAME}"
+  ###  IPv6無効
+  - remoteope: Powershell -c '$i6 = Get-NetAdapterBinding | Where-Object {$_.ComponentID -eq ''ms_tcpip6''};
+                                    foreach($List in $i6){
+                                       Disable-NetAdapterBinding -Name $List.Name -ComponentID ms_tcpip6}'
+  ### DNS設定
+  - remoteope: Powershell -c 'Get-NetAdapter | Set-DnsClientServerAddress -ServerAddresses _${ADSERVER},192.168.112.2'
+  ### タイムゾーンを東京時間に変更
+  - remoteope: Powershell -c 'Set-TimeZone -Id ''Tokyo Standard Time'''
+  - remoteope: reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation" /v RealTimeIsUniversal /d 1 /t REG_DWORD /f
+  ### サーバ再起動
+  - remoteope: shutdown -r -t 0
+  ### pingを打ち続ける。起動したら止まる
+  - localope: 'powershell -c "
+               for(;;){ 
+                  Start-Sleep -Seconds 10;
+                  $result=Test-Connection _${SIM2016AWSIP} -Count 1 -quiet;
+                  if($result -eq ''True''){ 
+                     Write-Host _${SIM2016AWSIP} ping ok;
+                     break;
+                  } 
+                  Write-host _${SIM2016AWSIP} 起動していません;
+               }"'

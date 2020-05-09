@@ -1,0 +1,16 @@
+###########EC2の初期パスワードを任意のものに変更################3
+###########　注意 この処理だけは，passwdの書式を"EC2INITPASSWD|_${各EC2ホスト名変数名}"とする必要がある。
+TargetCon1:
+  ConnParm:
+  - hostname: 192.168.112.11
+  - userid: Administrator
+  - passwd: EC2INITPASSWD|_${SIM2016AWSHOSTNAME}
+  Operation:
+  ## パスワードを任意のものに変更
+  - remoteope: cmd /c net user Administrator _${EC2CHGPASSWD}
+########### 初期パスワードファイルを削除
+TargetCon2:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  - localope: cmd /c del _${WORKDIR}\_${SIM2016AWSHOSTNAME}_tmpps.txt

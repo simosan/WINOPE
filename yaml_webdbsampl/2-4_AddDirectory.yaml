@@ -1,0 +1,28 @@
+###########Windowsサーバに追加ボリュームを指定ドライブレターにアタッチする################
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### DJドライブにフォルダを生成する。
+  - remoteope: cmd.exe /c "mkdir D:\opt;
+                           mkdir D:\appl\ii\bin;
+                           mkdir D:\appl\ii\log;
+                           mkdir D:\appl\ii\db;
+                           mkdir D:\appl\ii\data;
+                           mkdir D:\appl\ii\etc;
+                           mkdir D:\appl\ii\work;
+                           mkdir D:\appl\ii\lib;
+                           mkdir D:\appl\ii\tmp;
+                           mkdir D:\appl\ii\tools > NUL 2>&1" 
+  - remoteope: cmd.exe /c "mkdir J:\appl\ii\bin;
+                           mkdir J:\appl\ii\log;
+                           mkdir J:\appl\ii\db;
+                           mkdir J:\appl\ii\data;
+                           mkdir J:\appl\ii\etc;
+                           mkdir J:\appl\ii\work;
+                           mkdir J:\appl\ii\lib;
+                           mkdir J:\appl\ii\tmp;
+                           mkdir J:\appl\ii\tools > NUL 2>&1"
+   

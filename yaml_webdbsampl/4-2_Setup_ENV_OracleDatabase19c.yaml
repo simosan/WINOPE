@@ -1,0 +1,20 @@
+###########Oracle諸々事前設定################            
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### Oracleユーザ作成(Oracleホームユーザ)
+  - remoteope: Powershell -c '$pwd = ConvertTo-SecureString _${ORACLEPASSWD} -AsPlainText -Force;
+                              New-LocalUser -Name oracle -Password $pwd -FullName "oracle" 
+                              -Description ''oracle user'' -PasswordNeverExpires -AccountNeverExpires'
+###########Oracle環境変数################            
+TargetCon2:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### OracleHOME
+  - psdscope: _${DSCDIRECTORY}\Add_ORACLEENV

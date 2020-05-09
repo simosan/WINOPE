@@ -1,0 +1,10 @@
+###########Oracleアーカイブファイルを解凍################            
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  - remoteope: powershell -c "Expand-Archive -Path d:\appl\ii\tmp\WINDOWS.X64_193000_db_home.zip -DestinationPath 
+                                                   d:\opt\oracle\product\193000\dbhome_1 -Force"
+  - remoteope: powershell -c "Remove-Item -Path d:\appl\ii\tmp\WINDOWS.X64_193000_db_home.zip -Force" 

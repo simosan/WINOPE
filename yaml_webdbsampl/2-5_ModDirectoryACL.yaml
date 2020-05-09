@@ -1,0 +1,11 @@
+###########Windowsサーバに追加ボリュームを指定ドライブレターにアタッチする################
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### フォルダのACLを変更する(なぜか少し待たないと成功しないのでSleepいれる)
+  - remoteope: powershell -c 'Start-Sleep -Seconds 30'
+  - psdscope: _${DSCDIRECTORY}\Mod_FOLDER_ACL
+   

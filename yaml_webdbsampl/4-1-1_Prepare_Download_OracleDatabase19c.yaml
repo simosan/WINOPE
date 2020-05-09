@@ -1,0 +1,13 @@
+###########Oracleインストーラファイルを対象サーバに転送################
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  ### Installerダウンロード
+#  - localope: powershell -c "Copy-Item -Recurse 'C:\Users\Administrator\OneDrive\ドキュメント\python_code\winope\material\WINDOWS.X64_193000_db_home.zip'
+#                                                'FileSystem::\\_${SIM2016AWSIP}\D$\appl\ii\tmp\'
+#                                       -Force"
+  - remoteope: powershell -c 'Invoke-WebRequest -Uri http://192.168.11.10/material/WINDOWS.X64_193000_db_home.zip 
+                                -outfile d:\appl\ii\tmp\WINDOWS.X64_193000_db_home.zip'

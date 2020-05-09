@@ -1,0 +1,29 @@
+###########OracleDBtインスタンス作成################            
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  - remoteope: 'd:\opt\oracle\product\193000\dbhome_1\bin\dbca -silent -createDatabase
+                  -gdbName SIMTEST
+                  -templateName d:\opt\oracle\product\193000\dbhome_1\assistants\dbca\templates\General_Purpose.dbc
+                  -sid SIMTEST
+                  -databaseConfigType SINGLE
+                  -databaseType MULTIPURPOSE
+                  -registerWithDirService false
+                  -dvConfiguration false
+                  -enableArchive false
+                  -memoryMgmtType AUTO_SGA
+                  -olsConfiguration false
+                  -useOMF false
+                  -sampleSchema true
+                  -adminManaged
+                  -storageType FS
+                    -datafileDestination j:\appl\ii\db
+                  -emConfiguration NONE
+                  -sysPassword _${ORACLEPASSWD}
+                  -systemPassword _${ORACLEPASSWD}
+                  -oracleHomeUserName oracle
+                  -oracleHomeUserPassword _${ORACLEPASSWD}
+                  -nationalCharacterSet AL16UTF16'

@@ -1,0 +1,32 @@
+#========================AMIからEC2を作成============================
+#注意事項! WindowsのAMI作成時はwindowsFWの全プロファイルを無効化しておくこと。有効化されているとWinRMによるリモート操作が行えない。FWはあとで詳細に設定するため問題なし
+TargetCon1:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  ####### 前処理 ###########################
+# workディレクトリがある場合はすでにEC2インスタンスが生成されているので抜ける.
+  - localope: 'powershell -c "if (Test-Path _${WORKDIR}) {
+                                 Write-Error すでにインスタンスが存在しています;
+                                 exit 255;
+                              } else {
+                                 New-Item _${WORKDIR} -ItemType Directory 
+                              }"'
+  ####### Windowsサーバ用EC2インスタンス作成 ########
+  - localope: "aws ec2 run-instances --profile _${AWSPROFILE} --region ap-northeast-1 --image-id _${AMIID} \
+              --key-name _${SSHKEYNAME} --instance-type _${INSTANCEID} \
+              --subnet-id _${SUBNETID} --private-ip-address _${SIM2016AWSIP} \
+              --security-group-ids _${SECURITYGROUP1} \
+              --iam-instance-profile Name=_${IAMPROFILE} \
+              --tag-specifications \"ResourceType=instance,Tags=[{Key=Name,Value=_${SIM2016AWSHOSTNAME}}]\" > _${WORKDIR}/instance-info-_${SIM2016AWSHOSTNAME}.json"
+  # 削除用のjson生成
+  - localope: jq -r ".Instances[].InstanceId" _${WORKDIR}/instance-info-_${SIM2016AWSHOSTNAME}.json > _${WORKDIR}/instance-id-_${SIM2016AWSHOSTNAME}.txt
+  # Windowsサーバ起動確認
+  - localope: 'powershell -c "
+               for(;;){ 
+                  $result=Test-Connection _${SIM2016AWSIP} -Count 1 -quiet;
+                  if($result -eq ''True''){ 
+                     Write-Host _${SIM2016AWSIP} ping ok; break;
+                  } 
+                  Write-host _${SIM2016AWSIP} 起動していません;Start-Sleep -Seconds 5
+               }"'

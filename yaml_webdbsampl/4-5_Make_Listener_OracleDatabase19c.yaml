@@ -1,0 +1,13 @@
+###########OracleDBtインスタンス作成################            
+TargetCon1:
+  ConnParm:
+  - hostname: sim2016-aws
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  - remoteope: 'd:\opt\oracle\product\193000\dbhome_1\bin\netca -silent
+                  -responsefile d:\opt\oracle\product\193000\dbhome_1\assistants\netca\netca.rsp
+                  -instype typical
+                    -listener LISTENER
+                    -lisport 1521
+                  -log j:\appl\ii\log\listener_simtest.log'

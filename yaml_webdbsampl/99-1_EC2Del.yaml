@@ -1,0 +1,22 @@
+#========================EC2削除===========================
+TargetCon1:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  ####### Windowsサーバ用EC2インスタンス,ボリューム削除 ########
+  - localope: powershell -c "$i=Get-Content _${WORKDIR}/instance-id-_${SIM2016AWSHOSTNAME}.txt;
+                             aws ec2 --profile _${AWSPROFILE} terminate-instances --instance-ids $i"
+  - localope: powershell -c "Start-Sleep -Seconds 120"
+  - localope: powershell -c "$v=Get-Content _${WORKDIR}/_${EBSVOLTAGD}.txt;
+                             aws ec2 --profile _${AWSPROFILE} delete-volume --volume-id $v"
+  - localope: powershell -c "$v=Get-Content _${WORKDIR}/_${EBSVOLTAGJ}.txt;
+                             aws ec2 --profile _${AWSPROFILE} delete-volume --volume-id $v"
+  - localope: cmd /c rd /S /Q _${WORKDIR}
+#=========コンピュータアカウント削除========================
+TargetCon2:
+  ConnParm:
+  - hostname: 192.168.11.10
+  - userid: Administrator@simosan.local
+  - passwd: _${ADMINPASSWD}
+  Operation:
+  - remoteope: powershell -c 'Remove-ADComputer -confirm:$false _${SIM2016AWSHOSTNAME}'
