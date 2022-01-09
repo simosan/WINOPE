@@ -7,5 +7,113 @@ TargetCon1:
   Operation:
   ### フォルダのACLを変更する(なぜか少し待たないと成功しないのでSleepいれる)
   - remoteope: powershell -c 'Start-Sleep -Seconds 30'
-  - psdscope: _${DSCDIRECTORY}\Mod_FOLDER_ACL
-   
+  ### D,Jドライブのbin,etc,libの継承無効化
+  - remoteope: powershell -c '$target=''d:\appl\ii\bin'';
+                              $acl=Get-Acl $target;
+                              $acl.SetAccessRuleProtection($true, $true);
+                              $acl | Set-Acl $target'
+  - remoteope: powershell -c '$target=''d:\appl\ii\etc'';
+                              $acl=Get-Acl $target;
+                              $acl.SetAccessRuleProtection($true, $true);
+                              $acl | Set-Acl $target'
+  - remoteope: powershell -c '$target=''d:\appl\ii\lib'';
+                              $acl=Get-Acl $target;
+                              $acl.SetAccessRuleProtection($true, $true);
+                              $acl | Set-Acl $target'
+  - remoteope: powershell -c '$target=''j:\appl\ii\bin'';
+                              $acl=Get-Acl $target;
+                              $acl.SetAccessRuleProtection($true, $true);
+                              $acl | Set-Acl $target'  
+  - remoteope: powershell -c '$target=''j:\appl\ii\etc'';
+                              $acl=Get-Acl $target;
+                              $acl.SetAccessRuleProtection($true, $true);
+                              $acl | Set-Acl $target'  
+  - remoteope: powershell -c '$target=''j:\appl\ii\lib'';
+                              $acl=Get-Acl $target;
+                              $acl.SetAccessRuleProtection($true, $true);
+                              $acl | Set-Acl $target'  
+  ### bin,etc,libに所定ユーザに対して読み取り権限だけを与える 
+  - remoteope: '$target=''d:\appl\ii\bin'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''ReadAndExecute'',''ContainerInherit, ObjectInherit'', ''None'',''Allow'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;' 
+  - remoteope: '$target=''d:\appl\ii\bin'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''Write'',''ContainerInherit,ObjectInherit'',''None'',''Deny'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;'
+  - remoteope: '$target=''d:\appl\ii\etc'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''ReadAndExecute'',''ContainerInherit, ObjectInherit'', ''None'',''Allow'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;' 
+  - remoteope: '$target=''d:\appl\ii\etc'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''Write'',''ContainerInherit,ObjectInherit'',''None'',''Deny'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;'
+  - remoteope: '$target=''d:\appl\ii\lib'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''ReadAndExecute'',''ContainerInherit, ObjectInherit'', ''None'',''Allow'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;' 
+  - remoteope: '$target=''d:\appl\ii\lib'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''Write'',''ContainerInherit,ObjectInherit'',''None'',''Deny'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;'
+  - remoteope: '$target=''j:\appl\ii\bin'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''ReadAndExecute'',''ContainerInherit, ObjectInherit'', ''None'',''Allow'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;' 
+  - remoteope: '$target=''j:\appl\ii\bin'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''Write'',''ContainerInherit,ObjectInherit'',''None'',''Deny'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;'
+  - remoteope: '$target=''j:\appl\ii\etc'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''ReadAndExecute'',''ContainerInherit, ObjectInherit'', ''None'',''Allow'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;' 
+  - remoteope: '$target=''j:\appl\ii\etc'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''Write'',''ContainerInherit,ObjectInherit'',''None'',''Deny'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;'
+  - remoteope: '$target=''j:\appl\ii\lib'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''ReadAndExecute'',''ContainerInherit, ObjectInherit'', ''None'',''Allow'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;' 
+  - remoteope: '$target=''j:\appl\ii\lib'';
+                $user=''simosan\sim'';
+                $acl=Get-Acl $target;
+                $permission=($user,''Write'',''ContainerInherit,ObjectInherit'',''None'',''Deny'');
+                $accessRule=New-Object System.Security.AccessControl.FileSystemAccessRule $permission;
+                $acl.SetAccessRule($accessRule);
+                $acl | Set-Acl $target;'

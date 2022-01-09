@@ -30,3 +30,9 @@ TargetCon1:
                   } 
                   Write-host _${SIM2016AWSIP} 起動していません;Start-Sleep -Seconds 5
                }"'
+###########ローカルユーザでログイン許可（WinRMの接続元で実行要。接続先を全て許可。）################ 
+TargetCon2:
+  ConnParm:
+  - hostname: localhost
+  Operation:
+  - localope:  Powershell -c 'Set-Item WSman:\localhost\Client\TrustedHosts -Value * -Force'

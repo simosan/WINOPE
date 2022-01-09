@@ -23,9 +23,3 @@ TargetCon1:
   #### PublicProfile####
   - remoteope: cmd /c netsh advfirewall set publicprofile state on
   - remoteope: powershell -c 'netsh advfirewall set publicprofile firewallpolicy blockinboundalways,allowoutbound'
-###########ローカルユーザでログイン許可（これやっとかないとリモートサーバ（対象サーバ）にローカルユーザでログインできない）################ 
-TargetCon2:
-  ConnParm:
-  - hostname: localhost
-  Operation:
-  - localope:  Powershell -c 'Set-Item WSman:\localhost\Client\TrustedHosts -Value * -Force'
